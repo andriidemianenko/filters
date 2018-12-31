@@ -1,7 +1,10 @@
 <template lang="pug">
   section
-    slider-filters(:data="defaultGoods")
-    checkbox-filters(:data="defaultGoods")
+    slider-filters(:goods="defaultGoods")
+    checkbox-filters(:goods="defaultGoods")
+    br
+    button(@click="applyFilters") Apply
+    button(@click="clear") Clear
 </template>
 
 <script>
@@ -65,7 +68,14 @@ export default {
     }
   }, 
   computed: {},
-  methods: {},
+  methods: {
+    applyFilters () {
+      console.log('Clicked Apply!')
+    },
+    clear () {
+      console.log('Clicked Clear!')
+    }
+  },
   created () {}
 }
 </script>
