@@ -1,8 +1,8 @@
-<template>
-  <section>
-    <h1>{{ test }}</h1>
-  </section>
+<template lang="pug">
+  section
+    h1 {{ test }}
 </template>
+
 
 <script>
 export default {
