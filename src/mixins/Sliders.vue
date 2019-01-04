@@ -1,10 +1,3 @@
-<template lang="pug">
-  section
-    h1 Sliders Filters:
-    vue-slider(ref="price", v-model="price", :max="maxValue", :min="minValue")
-    span {{ price }}
-</template>
-
 <script>
 import vueSlider from 'vue-slider-component';
 
@@ -23,9 +16,7 @@ export default {
   },
   computed: {},
   methods: {},
-  created () {
-    console.log(this.goods)
-  }
+  created () {}
 }
 </script>
 
