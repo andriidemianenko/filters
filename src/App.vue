@@ -1,20 +1,39 @@
 <template lang="pug">
   section
-    slider-filters(:goods="defaultGoods")
-    checkbox-filters(:goods="defaultGoods")
+    section
+      h1 Sliders Filters:
+      vue-slider(ref="price", v-model="price", :max="maxValue", :min="minValue")
+      span {{ price }}
+    section
+      div
+        h1 Color Checkbox Filters:
+        ul
+          li(v-for="(color, index) in colorFilters")
+            input(type="checkbox", v-model="checkedFilters", :value="color") 
+            label {{ color }}
+      div
+        h1 Brand Checkbox Filters:
+        ul
+          li(v-for="(brand, index) in brandFilters")
+            input(type="checkbox", v-model="checkedFilters", :value="brand") 
+            label {{ brand }}
+      br
+      span.checked-filters(v-show="checkedFilters.length > 0") {{ checkedFilters }}
     br
+    span(v-show="filteredGoods.length > 0") {{ filteredGoods }}
     button(@click="applyFilters") Apply
     button(@click="clear") Clear
 </template>
 
 <script>
-import SliderFilters from './components/Sliders.vue'
-import CheckboxFilters from './components/Checkbox.vue'
+import SliderFilters from './mixins/Sliders.vue'
+import CheckboxFilters from './mixins/Checkbox.vue'
 
 export default {
-  components: { SliderFilters, CheckboxFilters },
+  mixins: [ SliderFilters, CheckboxFilters ],
   data () {
     return {
+      filteredGoods: [],
       defaultGoods: [
         {
           price: 7400,
@@ -70,13 +89,20 @@ export default {
   computed: {},
   methods: {
     applyFilters () {
-      console.log('Clicked Apply!')
+     console.log('Clicked Apply!')
     },
     clear () {
-      console.log('Clicked Clear!')
+      this.filteredGoods = []
     }
   },
   created () {}
 }
 </script>
+<style>
+.checked-filters {
+  float: left;
+  color: green;
+}
+</style>
+
 
