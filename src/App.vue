@@ -89,7 +89,16 @@ export default {
   computed: {},
   methods: {
     applyFilters () {
-     console.log('Clicked Apply!')
+     this.filteredGoods = this.defaultGoods.filter(el => {
+        return (el.price <= this.price) && this.checkedFilters.every(filterAppied => {
+          if (el.color.includes(filterAppied)) {
+            return el.color.includes(filterAppied)
+          }
+          if (el.producer.includes(filterAppied)) {
+            return el.producer.includes(filterAppied)
+          }
+        })
+      })
     },
     clear () {
       this.filteredGoods = []
