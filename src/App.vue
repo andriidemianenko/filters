@@ -1,28 +1,37 @@
 <template lang="pug">
-  section
-    section
-      h1 Sliders Filters:
-      vue-slider(ref="price", v-model="price", :max="maxValue", :min="minValue")
-      span {{ price }}
-    section
-      div
-        h1 Color Checkbox Filters:
-        ul
-          li(v-for="(color, index) in colorFilters")
-            input(type="checkbox", v-model="checkedFilters", :value="color") 
-            label {{ color }}
-      div
-        h1 Brand Checkbox Filters:
-        ul
-          li(v-for="(brand, index) in brandFilters")
-            input(type="checkbox", v-model="checkedFilters", :value="brand") 
-            label {{ brand }}
-      br
-      span.checked-filters(v-show="checkedFilters.length > 0") {{ checkedFilters }}
-    br
-    span(v-show="filteredGoods.length > 0") {{ filteredGoods }}
-    button(@click="applyFilters") Apply
-    button(@click="clear") Clear
+  section.section
+    .container
+      .columns
+        .column.filter-container
+          h3.title.is-3 Sliders Filters:
+          vue-slider(ref="price", v-model="price", :max="maxValue", :min="minValue")
+          .choosen-filters
+            p Choosen Value: {{ price }}
+          .columns.is-mobile
+            .column.filter-container
+              h3.title.is-3 Color Checkbox Filters:
+              ul
+                li(v-for="(color, index) in colorFilters")
+                  input.is-checkradio(type="checkbox", v-model="checkedFilters", :value="color") 
+                  label {{ color }}
+            .column.filter-container
+              h3.title.is-3 Brand Checkbox Filters:
+              ul
+                li(v-for="(brand, index) in brandFilters")
+                  input(type="checkbox", v-model="checkedFilters", :value="brand")
+                  label {{ brand }}
+      .columns
+        .column.filter-container
+          h4.title.is-4 Checked Filters:
+          span(v-if="checkedFilters.length") {{ checkedFilters }}
+          span.has-text-danger(v-else) No Filters Choosen!
+        .column.filter-container
+          h4.title.is-4 Matching Goods:
+          span(v-if="filteredGoods.length") {{ filteredGoods }}
+          span.has-text-danger(v-else) There are no goods matching this filters!
+      .buttons.are-large.is-centered
+        button.button.is-primary.is-focused(@click="applyFilters") Apply
+        button.button.is-warning.is-focused(@click="clear") Clear
 </template>
 
 <script>
@@ -102,6 +111,7 @@ export default {
     },
     clear () {
       this.filteredGoods = []
+      this.checkedFilters = []
     }
   },
   created () {}
@@ -111,6 +121,13 @@ export default {
 .checked-filters {
   float: left;
   color: green;
+}
+.filter-container {
+  border: 2px #4978cf solid;
+  margin: 20px;
+}
+.choosen-filters {
+  margin: 20px 0px 20px 0px;
 }
 </style>
 

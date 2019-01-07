@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
-// import vueSlider from 'vue-slider-component'
+
+import 'bulma/css/bulma.css'
 
 new Vue({
   el: '#app',
