@@ -3,25 +3,22 @@
     .container
       .columns
         .column.filter-container
-          h3.title.is-3 Sliders Filters:
-          vue-slider(ref="price", v-model="price", :max="maxValue", :min="minValue")
-          .choosen-filters
-            p Choosen Value: {{ price }}
-          .columns.is-mobile
-            .column.filter-container
-              h3.title.is-3 Color Checkbox Filters:
-              ul
-                li(v-for="(color, index) in colorFilters")
-                  input.is-checkradio(type="checkbox", v-model="checkedFilters", :value="color") 
-                  label {{ color }}
-            .column.filter-container
-              h3.title.is-3 Brand Checkbox Filters:
-              ul
-                li(v-for="(brand, index) in brandFilters")
-                  input(type="checkbox", v-model="checkedFilters", :value="brand")
-                  label {{ brand }}
-      .columns
-        .column.filter-container
+          .column.filter-container(v-for="(filter, index) in filters", :key="index")
+            b-tooltip(:label="filter.popupText", multilined, position="is-right", animated)
+              h3.title.is-3 {{ filter.title }} Filters:
+            div(v-if="filter.type === 'range'")
+              vue-slider(ref="price", v-model="filter.value", :max="filter.data.maxValue", :min="filter.data.minValue")
+              .choosen-filters
+                p Choosen Value: {{ filter.value }}
+            div(v-if="filter.type === 'checkbox'")
+              .columns.is-mobile
+                .column
+                  ul
+                    li(v-for="filterOption in filter.data")
+                      input.is-checkradio(type="checkbox", v-model="filter.value", :value="filterOption") 
+                      label {{ filterOption }}
+      .columns.filter-container
+        .column
           h4.title.is-4 Checked Filters:
           span(v-if="checkedFilters.length") {{ checkedFilters }}
           span.has-text-danger(v-else) No Filters Choosen!
@@ -35,14 +32,44 @@
 </template>
 
 <script>
-import SliderFilters from './mixins/Sliders.vue'
-import CheckboxFilters from './mixins/Checkbox.vue'
+import vueSlider from 'vue-slider-component'
 
 export default {
-  mixins: [ SliderFilters, CheckboxFilters ],
+  components: { vueSlider },
   data () {
     return {
       filteredGoods: [],
+      filters: [
+        {
+          type: 'checkbox',
+          title: 'Brand',
+          value: [],
+          data: ['Meizu', 'Xiaomi', 'Apple', 'Dell', 'HP'],
+          popupText: 'Here you can see the Brand filters!'
+        },
+        {
+          type: 'checkbox',
+          title: 'Colors',
+          value: [],
+          data: ['red', 'black', 'white', 'blue', 'green'],
+          popupText: 'Here you can see the Color filters!'
+        },
+        {
+          type: 'range',
+          title: 'MaxPrice',
+          value: 20000,
+          data: {
+            minValue: 0,
+            maxValue: 32000
+          },
+          popupText: 'Here you can see the range filters!'
+        }
+      ],
+      // price: 20000,
+      // minValue: 0,
+      // maxValue: 32000,
+      // colorFilters: ['red', 'black', 'white', 'blue', 'green'],
+      // brandFilters: ['Meizu', 'Xiaomi', 'Apple', 'Dell', 'HP'],
       defaultGoods: [
         {
           price: 7400,
@@ -57,7 +84,7 @@ export default {
           producer: 'Xiaomi'
         },
         {
-          price: 70000,
+          price: 30000,
           color: 'white',
           type: 'laptops',
           producer: 'Apple'
@@ -95,10 +122,14 @@ export default {
       ]
     }
   }, 
-  computed: {},
+  computed: {
+    checkedFilters () {
+      return this.filters.map(filter => filter.value)
+    }
+  },
   methods: {
     applyFilters () {
-     this.filteredGoods = this.defaultGoods.filter(el => {
+      this.filteredGoods = this.defaultGoods.filter(el => {
         return (el.price <= this.price) && this.checkedFilters.every(filterAppied => {
           if (el.color.includes(filterAppied)) {
             return el.color.includes(filterAppied)
