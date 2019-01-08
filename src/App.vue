@@ -6,17 +6,16 @@
           .column.filter-container(v-for="(filter, index) in filters", :key="index")
             b-tooltip(:label="filter.popupText", multilined, position="is-right", animated)
               h3.title.is-3 {{ filter.title }} Filters:
-            div(v-if="filter.type === 'range'")
+            div(v-if="filter.type === 'max-slider' || filter.type === 'min-slider'")
               vue-slider(ref="price", v-model="filter.value", :max="filter.data.maxValue", :min="filter.data.minValue")
               .choosen-filters
                 p Choosen Value: {{ filter.value }}
             div(v-if="filter.type === 'checkbox'")
               .columns.is-mobile
                 .column
-                  ul
-                    li(v-for="filterOption in filter.data")
-                      input.is-checkradio(type="checkbox", v-model="filter.value", :value="filterOption") 
-                      label {{ filterOption }}
+                  div(v-for="filterOption in filter.data")
+                    input.is-checkradio(type="checkbox", v-model="filter.value", :value="filterOption") 
+                    label {{ filterOption }}
       .columns.filter-container
         .column
           h4.title.is-4 Checked Filters:
@@ -43,6 +42,7 @@ export default {
         {
           type: 'checkbox',
           title: 'Brand',
+          name: 'producer',
           value: [],
           data: ['Meizu', 'Xiaomi', 'Apple', 'Dell', 'HP'],
           popupText: 'Here you can see the Brand filters!'
@@ -50,14 +50,26 @@ export default {
         {
           type: 'checkbox',
           title: 'Colors',
+          name: 'color',
           value: [],
           data: ['red', 'black', 'white', 'blue', 'green'],
           popupText: 'Here you can see the Color filters!'
         },
         {
-          type: 'range',
+          type: 'max-slider',
           title: 'MaxPrice',
-          value: 20000,
+          name: 'price',
+          value: 32000,
+          data: {
+            minValue: 0,
+            maxValue: 32000
+          }
+        },
+        {
+          type: 'min-slider',
+          title: 'MinPrice',
+          name: 'price',
+          value: 0,
           data: {
             minValue: 0,
             maxValue: 32000
@@ -65,11 +77,6 @@ export default {
           popupText: 'Here you can see the range filters!'
         }
       ],
-      // price: 20000,
-      // minValue: 0,
-      // maxValue: 32000,
-      // colorFilters: ['red', 'black', 'white', 'blue', 'green'],
-      // brandFilters: ['Meizu', 'Xiaomi', 'Apple', 'Dell', 'HP'],
       defaultGoods: [
         {
           price: 7400,
@@ -130,19 +137,40 @@ export default {
   methods: {
     applyFilters () {
       this.filteredGoods = this.defaultGoods.filter(el => {
-        return (el.price <= this.price) && this.checkedFilters.every(filterAppied => {
-          if (el.color.includes(filterAppied)) {
-            return el.color.includes(filterAppied)
-          }
-          if (el.producer.includes(filterAppied)) {
-            return el.producer.includes(filterAppied)
+        return undefined === this.filters.find(filter => {
+          switch(filter.type) {
+            case 'checkbox':
+              if (!filter.value.length) {
+                return false
+              } else {
+                return !filter.value.includes(el[filter.name])
+              }
+            case 'max-slider':
+              return !(el[filter.name] < filter.value)
+            case 'min-slider':
+              return !(el[filter.name] > filter.value)
           }
         })
       })
+      this.updateFilters()
     },
     clear () {
-      this.filteredGoods = []
-      this.checkedFilters = []
+      this.filters.forEach(filter => {
+        if (filter.type === 'checkbox') {
+          filter.value = []
+        } else if (filter.type === 'max-slider' || filter.type === 'min-slider') {
+          filter.value = 0
+        }
+      })
+    },
+    updateFilters () {
+      this.axios.post('https://some-endpoint.com/', this.filteredGoods)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   created () {}
