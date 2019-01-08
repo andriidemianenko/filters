@@ -4,7 +4,8 @@
       .columns
         .column.filter-container
           .column.filter-container(v-for="(filter, index) in filters", :key="index")
-            h3.title.is-3 {{ filter.title }} Filters:
+            b-tooltip(:label="filter.popupText", multilined, position="is-right", animated)
+              h3.title.is-3 {{ filter.title }} Filters:
             div(v-if="filter.type === 'range'")
               vue-slider(ref="price", v-model="filter.value", :max="filter.data.maxValue", :min="filter.data.minValue")
               .choosen-filters
@@ -43,13 +44,15 @@ export default {
           type: 'checkbox',
           title: 'Brand',
           value: [],
-          data: ['Meizu', 'Xiaomi', 'Apple', 'Dell', 'HP']
+          data: ['Meizu', 'Xiaomi', 'Apple', 'Dell', 'HP'],
+          popupText: 'Here you can see the Brand filters!'
         },
         {
           type: 'checkbox',
           title: 'Colors',
           value: [],
-          data: ['red', 'black', 'white', 'blue', 'green']
+          data: ['red', 'black', 'white', 'blue', 'green'],
+          popupText: 'Here you can see the Color filters!'
         },
         {
           type: 'range',
@@ -58,7 +61,8 @@ export default {
           data: {
             minValue: 0,
             maxValue: 32000
-          }
+          },
+          popupText: 'Here you can see the range filters!'
         }
       ],
       // price: 20000,
