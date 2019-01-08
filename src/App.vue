@@ -7,6 +7,7 @@
             b-tooltip(:label="filter.popupText", multilined, position="is-right", animated)
               h3.title.is-3 {{ filter.title }} Filters:
             div(v-if="filter.type === 'max-slider' || filter.type === 'min-slider'")
+              br
               vue-slider(ref="price", v-model="filter.value", :max="filter.data.maxValue", :min="filter.data.minValue")
               .choosen-filters
                 p Choosen Value: {{ filter.value }}
