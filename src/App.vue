@@ -1,34 +1,49 @@
-<template lang="pug">
-  section.section
-    .container
-      .columns
-        .column.filter-container
-          .column.filter-container(v-for="(filter, index) in filters", :key="index")
-            b-tooltip(:label="filter.popupText", multilined, position="is-right", animated)
-              h3.title.is-3 {{ filter.title }} Filters:
-            div(v-if="filter.type === 'max-slider' || filter.type === 'min-slider'")
-              br
-              vue-slider(ref="price", v-model="filter.value", :max="filter.data.maxValue", :min="filter.data.minValue")
-              .choosen-filters
-                p Choosen Value: {{ filter.value }}
-            div(v-if="filter.type === 'checkbox'")
-              .columns.is-mobile
-                .column
-                  div(v-for="filterOption in filter.data")
-                    input.is-checkradio(type="checkbox", v-model="filter.value", :value="filterOption") 
-                    label {{ filterOption }}
-      .columns.filter-container
-        .column
-          h4.title.is-4 Checked Filters:
-          span(v-if="checkedFilters.length") {{ checkedFilters }}
-          span.has-text-danger(v-else) No Filters Choosen!
-        .column.filter-container
-          h4.title.is-4 Matching Goods:
-          span(v-if="filteredGoods.length") {{ filteredGoods }}
-          span.has-text-danger(v-else) There are no goods matching this filters!
-      .buttons.are-large.is-centered
-        button.button.is-primary.is-focused(@click="applyFilters") Apply
-        button.button.is-warning.is-focused(@click="clear") Clear
+<template lang="html">
+  <section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column filter-container">
+                <div class="column filter-container" v-for="(filter, index) in filters" :key="index">
+                  <b-tooltip :label="filter.popupText" multilined position="is-right" animated>
+                    <h3 class="title is-3">{{ filter.title }} Filters:</h3>
+                  </b-tooltip>
+                  <div v-if="filter.type === 'max-slider' || filter.type === 'min-slider'"><br/>
+                    <vue-slider ref="price" v-model="filter.value" :max="filter.data.maxValue" :min="filter.data.minValue"></vue-slider>
+                    <div class="choosen-filters">
+                      <p>Choosen Value: {{ filter.value }}</p>
+                    </div>
+                  </div>
+                  <div v-if="filter.type === 'checkbox'">
+                    <div class="columns is-mobile">
+                      <div class="column">
+                        <div v-for="filterOption in filter.data">
+                          <input class="is-checkradio" type="checkbox" v-model="filter.value" :value="filterOption" />
+                            <label>{{ filterOption }}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        <div class="columns filter-container">
+          <div class="column">
+            <h4 class="title is-4">Checked Filters:</h4>
+            <span v-if="checkedFilters.length">{{ checkedFilters }}</span>
+            <span class="has-text-danger" v-else>No Filters Choosen!</span>
+          </div>
+          <div class="column filter-container">
+            <h4 class="title is-4">Matching Goods:</h4>
+            <span v-if="filteredGoods.length">{{ filteredGoods }}</span>
+              <span class="has-text-danger" v-else>There are no goods matching this filters!</span>
+            </div>
+        </div>
+        <div class="buttons are-large is-centered">
+          <button class="button is-primary is-focused" @click="applyFilters">Apply</button>
+          <button class="button is-warning is-focused" @click="clear">Clear</button>
+        </div>
+    </div>
+</section>
 </template>
 
 <script>
@@ -64,7 +79,8 @@ export default {
           data: {
             minValue: 0,
             maxValue: 32000
-          }
+          },
+          popupText: 'Here you can see the range filters!'
         },
         {
           type: 'min-slider',
