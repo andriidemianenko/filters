@@ -1,13 +1,15 @@
 <template lang="html">
-  <div class="columns filter-container">
-    <div class="column">
-      <h4 class="title is-4">Checked Filters:</h4>
-      <span v-if="checkedFilters.length">{{ checkedFilters }}</span>
-      <span class="has-text-danger" v-else>No Filters Choosen!</span>
-    </div>
+  <div class="columns">
     <div class="column filter-container">
       <h4 class="title is-4">Matching Goods:</h4>
-      <span v-if="filteredGoods.length">{{ filteredGoods }}</span>
+      <div v-if="filteredGoods.length">
+        <b-message type="is-info" v-for="(product, index) in filteredGoods" :key="product.price + index">
+          <span><b>Producer:</b> {{ product.producer }}</span></br>
+          <span><b>Product Type:</b> {{ product.type }}</span></br>
+          <span><b>Color:</b> {{ product.color }}</span></br>
+          <span><b>Price:</b> {{ product.price }}</span>
+        </b-message>
+      </div>
       <span class="has-text-danger" v-else>There are no goods matching this filters!</span>
     </div>
   </div>
@@ -16,7 +18,6 @@
 export default {
   name: 'display',
   props: {
-    checkedFilters: Array,
     filteredGoods: Array
   },
   data () {

@@ -1,12 +1,19 @@
 <template lang="html">
   <section class="section">
     <div class="container">
-        <filters :goods="defaultGoods" :filters="filters"></filters> 
-        <display :checkedFilters="checkedFilters" :filteredGoods="filteredGoods"></display>
-        <div class="buttons are-large is-centered">
-          <button class="button is-primary is-focused" @click="applyFilters">Apply</button>
-          <button class="button is-warning is-focused" @click="clear">Clear</button>
+        <div class="columns filter-container">
+          <div class="column filter-container">
+            <checked-filters :checkboxFilters="checkboxFilters" :sliderFilters="sliderFilters"></checked-filters>
+          </div>
+          <div class="column">
+            <div class="buttons is-centered">
+              <button class="button is-primary is-focused is-fullwidth" @click="applyFilters">Apply</button>
+              <button class="button is-warning is-focused is-fullwidth" @click="clear">Clear</button>
+            </div>
+          </div>
         </div>
+        <filters :goods="defaultGoods" :filters="filters"></filters> 
+        <display :filteredGoods="filteredGoods"></display>
     </div>
 </section>
 </template>
@@ -14,9 +21,10 @@
 <script>
 import Filters from './components/Filters.vue'
 import Display from './components/Display.vue'
+import CheckedFilters from './components/CheckedFilters.vue'
 
 export default {
-  components: { Filters, Display },
+  components: { Filters, Display, CheckedFilters },
   data () {
     return {
       filteredGoods: [],
@@ -38,10 +46,10 @@ export default {
           popupText: 'Here you can see the Color filters!'
         },
         {
-          type: 'max-slider',
-          title: 'MaxPrice',
+          type: 'min-slider',
+          title: 'MinPrice',
           name: 'price',
-          value: 32000,
+          value: 0,
           data: {
             minValue: 0,
             maxValue: 32000
@@ -49,10 +57,10 @@ export default {
           popupText: 'Here you can see the range filters!'
         },
         {
-          type: 'min-slider',
-          title: 'MinPrice',
+          type: 'max-slider',
+          title: 'MaxPrice',
           name: 'price',
-          value: 0,
+          value: 32000,
           data: {
             minValue: 0,
             maxValue: 32000
@@ -113,8 +121,25 @@ export default {
     }
   }, 
   computed: {
-    checkedFilters () {
-      return this.filters.map(filter => filter.value)
+    checkboxFilters () {
+      let checkboxFilters = []
+      this.filters.forEach(filter => {
+        if (filter.type === 'checkbox') {
+          filter.value.forEach(filterVal => {
+            checkboxFilters.push(filterVal)
+          }) 
+        }
+      })
+      return checkboxFilters
+    },
+    sliderFilters () {
+      let sliderFilters = []
+      this.filters.forEach(filter => {
+        if (filter.type === 'max-slider' || filter.type === 'min-slider') {
+          sliderFilters.push(filter.value)
+        }
+      })
+      return sliderFilters
     }
   },
   methods: {
@@ -166,6 +191,8 @@ export default {
 }
 .filter-container {
   border: 2px #4978cf solid;
+}
+.column {
   margin: 20px;
 }
 .choosen-filters {
