@@ -1,12 +1,19 @@
 <template lang="html">
   <section class="section">
     <div class="container">
+        <div class="columns filter-container">
+          <div class="column filter-container">
+            <checked-filters :checkedFilters="checkedFilters"></checked-filters>
+          </div>
+          <div class="column">
+            <div class="buttons is-centered">
+              <button class="button is-primary is-focused is-fullwidth" @click="applyFilters">Apply</button>
+              <button class="button is-warning is-focused is-fullwidth" @click="clear">Clear</button>
+            </div>
+          </div>
+        </div>
         <filters :goods="defaultGoods" :filters="filters"></filters> 
         <display :checkedFilters="checkedFilters" :filteredGoods="filteredGoods"></display>
-        <div class="buttons are-large is-centered">
-          <button class="button is-primary is-focused" @click="applyFilters">Apply</button>
-          <button class="button is-warning is-focused" @click="clear">Clear</button>
-        </div>
     </div>
 </section>
 </template>
@@ -14,9 +21,10 @@
 <script>
 import Filters from './components/Filters.vue'
 import Display from './components/Display.vue'
+import CheckedFilters from './components/CheckedFilters.vue'
 
 export default {
-  components: { Filters, Display },
+  components: { Filters, Display, CheckedFilters },
   data () {
     return {
       filteredGoods: [],
@@ -166,6 +174,8 @@ export default {
 }
 .filter-container {
   border: 2px #4978cf solid;
+}
+.column {
   margin: 20px;
 }
 .choosen-filters {
